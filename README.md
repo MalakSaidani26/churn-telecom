@@ -233,16 +233,7 @@ probabilite_depart = modele.predict_proba(clients)[:, 1]
 | Tableau de bord | Power BI |
 | Notebook | Jupyter |
 
----
 
-## 🔮 Pistes d'amélioration
-
-- Rééquilibrer les classes (`class_weight="balanced"` ou SMOTE).
-- Tester d'autres modèles (XGBoost, Gradient Boosting).
-- Changer le **seuil de décision** (0.5 par défaut) pour détecter plus de clients à risque.
-- Supprimer les variables très liées entre elles (par exemple garder la durée **ou** le coût des appels).
-
----
 
 ## 👩‍💻 Auteure
 
