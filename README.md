@@ -46,7 +46,7 @@ churn-telecom/
 ├── models/       Meilleur modèle sauvegardé (.pkl)
 ├── powerbi/      Tableau de bord (.pbix)
 ├── docs/         Schéma du modèle en étoile
-├── talend/        Projet Talend (jobs ETL
+├── talend/       Projet Talend (jobs ETL)
 ├── requirements.txt
 └── README.md
 ```
