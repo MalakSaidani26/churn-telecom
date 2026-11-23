@@ -12,12 +12,13 @@ Projet de **Business Intelligence et Data Science** : prédire quels clients d'u
 2. [Contenu du dépôt](#-contenu-du-dépôt)
 3. [Les données](#-les-données)
 4. [Modèle en étoile (entrepôt de données)](#-modèle-en-étoile-entrepôt-de-données)
-5. [Notebook de prédiction](#-notebook-de-prédiction)
-6. [Résultats](#-résultats)
-7. [Tableau de bord Power BI](#-tableau-de-bord-power-bi)
-8. [Comment lancer le projet](#-comment-lancer-le-projet)
-9. [Outils utilisés](#-outils-utilisés)
-10. [Pistes d'amélioration](#-pistes-damélioration)
+5. [ETL avec Talend](#-etl-avec-talend)
+6. [Notebook de prédiction](#-notebook-de-prédiction)
+7. [Résultats](#-résultats)
+8. [Tableau de bord Power BI](#-tableau-de-bord-power-bi)
+9. [Comment lancer le projet](#-comment-lancer-le-projet)
+10. [Outils utilisés](#-outils-utilisés)
+11. [Pistes d'amélioration](#-pistes-damélioration)
 
 ---
 
@@ -29,11 +30,11 @@ Quand un client quitte son opérateur, l'entreprise perd de l'argent. Il coûte 
 
 Le projet suit 3 grandes étapes :
 
-| Étape | Ce qu'on fait |
-|---|---|
-| 1. **ETL** | Nettoyer et préparer les données, puis les ranger dans un entrepôt de données |
-| 2. **Analyse et prédiction** | Étudier les données et entraîner des modèles de Machine Learning |
-| 3. **Visualisation** | Montrer les résultats dans un tableau de bord Power BI |
+| Étape | Ce qu'on fait | Outil |
+|---|---|---|
+| 1. **ETL** | Nettoyer et préparer les données, puis les ranger dans un entrepôt de données | Talend + MySQL |
+| 2. **Analyse et prédiction** | Étudier les données et entraîner des modèles de Machine Learning | Python (Jupyter) |
+| 3. **Visualisation** | Montrer les résultats dans un tableau de bord | Power BI |
 
 ---
 
@@ -41,18 +42,20 @@ Le projet suit 3 grandes étapes :
 
 ```
 churn-telecom/
+├── talend/       Projet Talend (jobs ETL) + captures
 ├── data/         Données brutes et données après ETL
 ├── notebooks/    Notebook Jupyter de prédiction du churn
 ├── models/       Meilleur modèle sauvegardé (.pkl)
 ├── powerbi/      Tableau de bord (.pbix)
 ├── docs/         Schéma du modèle en étoile
-├── talend/       Projet Talend (jobs ETL)
 ├── requirements.txt
 └── README.md
 ```
 
 | Dossier / fichier | Description |
 |---|---|
+| `talend/CHURN/` | Projet Talend (les jobs ETL) |
+| `talend/captures/` | Captures d'écran des jobs ETL et de leurs résultats |
 | `data/dataset_telecom.csv` | Données **brutes** (5000 clients, 23 colonnes) |
 | `data/dataset_telecom_apres_etl.xlsx` | Données **nettoyées** après ETL (5000 clients, 18 colonnes) |
 | `notebooks/prediction_churn.ipynb` | Analyse des données + 4 modèles de prédiction |
@@ -105,6 +108,134 @@ Les données sont organisées en **étoile** : une grande table au centre (les f
 | `dim_temps_tt` | Dimension temps | Jour, mois, année |
 
 Les tables sont reliées par des clés : `id_client`, `id_ville` et `id_date`.
+
+---
+
+## 🔄 ETL avec Talend
+
+L'**ETL** (*Extract – Transform – Load*) sert à **extraire** les données du fichier CSV, les **transformer** (nettoyage) puis les **charger** dans l'entrepôt de données. Il a été réalisé avec **Talend**.
+
+### Deux bases de données MySQL
+
+| Base | Rôle |
+|---|---|
+| `bd_pfe1` | Base **intermédiaire** : elle stocke les données extraites du CSV (`table_source`), sert à nettoyer les mesures et à faire les jointures pour préparer la table de faits |
+| `bd_pfe` | **Entrepôt de données** : elle contient les 3 dimensions et la table de faits |
+
+### Les 5 jobs
+
+| # | Job | Ce qu'il alimente |
+|---|---|---|
+| 1 | Job `dim_client_tt` | Table `dim_client_tt` |
+| 2 | Job `dim_localisation` | Table `dim_localisation_tt` |
+| 3 | Job `dim_temps_tt` | Table `dim_temps_tt` |
+| 4 | Job `table_source` | Table `table_source` (données nettoyées, base `bd_pfe1`) |
+| 5 | Job `fact_churn_tt` | Table de faits `fact_churn_tt` |
+
+### Les composants Talend utilisés
+
+| Composant | À quoi il sert |
+|---|---|
+| `tFileInput` (`dataset_telecom`) | Lire le fichier CSV source |
+| `tMap` | Choisir les colonnes, faire des calculs, séparer les données en plusieurs flux |
+| `tReplace` | Remplacer des valeurs (par exemple `True.` / `False.`) |
+| `tConvertType` | Changer le type d'une colonne (par exemple `churn` en entier) |
+| `tAggregateRow` | Calculer des sommes, des moyennes, des maximums ou des nombres d'occurrences |
+| `tLogRow` | Afficher un résultat dans la console pour le contrôler |
+| Composants de sortie MySQL | Écrire les données dans les tables |
+
+### Job 1 : dimension client (`dim_client_tt`)
+
+On lit le CSV, puis on le transforme avant de le charger dans `dim_client_tt`.
+
+![Job dim_client_tt](talend/captures/01_job_dim_client_tt.png)
+
+Le premier `tMap` crée **deux flux** :
+- un flux qui **compte les valeurs nulles** des champs de la dimension (via `tAggregateRow` puis `tLogRow`) ;
+- un flux qui **sélectionne les données** à charger dans la dimension.
+
+![tMap 1 – dim_client](talend/captures/02_dim_client_tmap1.png)
+
+Le deuxième flux passe ensuite par un `tReplace` qui **remplace les valeurs** du champ `Tranche d'âge`.
+
+![tReplace – tranche d'âge](talend/captures/03_dim_client_treplace_tranche_age.png)
+
+Un second `tMap` termine le traitement de `Tranche d'âge` et traite aussi le champ `active_msg_vocaux`. Les autres champs passent sans changement, puis tout est inséré dans `dim_client_tt`.
+
+![tMap 2 – dim_client](talend/captures/04_dim_client_tmap2.png)
+
+### Job 2 : dimension localisation (`dim_localisation`)
+
+![Job dim_localisation](talend/captures/05_job_dim_localisation.png)
+
+Le `tMap` crée aussi **deux flux** :
+- un flux qui compte les valeurs nulles du champ `Ville` ;
+- un flux qui sélectionne les villes et **ajoute `id_ville`** avec un **auto-incrément** (1, 2, 3…).
+
+![tMap 1 – dim_localisation](talend/captures/06_dim_localisation_tmap1.png)
+
+### Job 3 : dimension temps (`dim_temps_tt`)
+
+À partir de la date d'activation, le `tMap` **extrait le jour, le mois et l'année**. L'identifiant de date est **généré automatiquement**.
+
+![Job dim_temps_tt](talend/captures/07_job_dim_temps_tt.png)
+
+![tMap 1 – dim_temps](talend/captures/08_dim_temps_tmap1.png)
+
+### Job 4 : table source (nettoyage des mesures)
+
+C'est le job de **nettoyage principal**. Il lit le CSV, nettoie les données, convertit un type, puis charge la table `table_source`.
+
+![Job table_source](talend/captures/09_job_table_source.png)
+
+**Étape 1 – Transformer `churn`.** Un `tReplace` remplace les valeurs de `churn`, puis un `tConvertType` le convertit en **entier** (`1` / `0`).
+
+![tReplace – churn](talend/captures/10_table_source_treplace_churn.png)
+
+**Étape 2 – Traiter les valeurs nulles.** Un `tMap` utilise **4 flux** :
+
+| Flux | Ce qu'il fait |
+|---|---|
+| 1 | `tAggregateRow 1` **compte les valeurs nulles**, le résultat est affiché dans `tLogRow 1` |
+| 2 | `tAggregateRow 2` compte le **nombre d'occurrences des réclamations** (`nb_reclamation`) |
+| 3 | `tAggregateRow 3` calcule le **maximum et la moyenne** des champs qui ont des valeurs nulles (sauf `nb_reclamation`) |
+| 4 | **Remplit les valeurs nulles** avec les résultats calculés dans les flux précédents |
+
+![tMap 1 – table_source](talend/captures/11_table_source_tmap1.png)
+
+Résultat du contrôle des valeurs nulles dans la console :
+
+![Résultat valeurs nulles](talend/captures/12_table_source_resultat_valeurs_nulles.png)
+
+Configuration du 4ᵉ flux (remplissage des valeurs nulles) :
+
+![tMap – remplissage des nulls](talend/captures/13_table_source_tmap_remplissage_nulls.png)
+
+### Job 5 : table de faits (`fact_churn_tt`)
+
+Ce job charge la table de faits au centre de l'étoile.
+
+![Job fact_churn_tt](talend/captures/14_job_fact_churn_tt.png)
+
+### Résultat : tables chargées dans l'entrepôt
+
+Après l'exécution des jobs, les tables sont bien remplies.
+
+**`dim_client_tt`**
+
+![dim_client_tt](talend/captures/15_resultat_dim_client_tt.png)
+
+**`dim_localisation`**
+
+![dim_localisation](talend/captures/16_resultat_dim_localisation.png)
+
+**`dim_temps_tt`**
+
+![dim_temps_tt](talend/captures/17_resultat_dim_temps_tt.png)
+
+**`fact_churn_tt`**
+
+![fact_churn_tt](talend/captures/18_resultat_fact_churn_tt.png)
 
 ---
 
@@ -238,5 +369,5 @@ probabilite_depart = modele.predict_proba(clients)[:, 1]
 
 ## 👩‍💻 Auteure
 
-**Malak Saidani** 
+**Malak Saidani**
 🔗 [LinkedIn](https://www.linkedin.com/in/malak-saidani-019b68334) · 🐙 [GitHub](https://github.com/MalakSaidani26)
