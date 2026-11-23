@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:TalendMetadata="http://www.talend.org/metadata/connection/2010" xmlns:orgomg.cwm.resource.record="http:///orgomg/cwm/resource/record.ecore">
+  <TalendMetadata:DelimitedFileConnection xmi:id="_WLKvUP-VEe-4c_PsdhHpCA" name="dataset_telecom" dataPackage="_WLKvUf-VEe-4c_PsdhHpCA" Server="Localhost 127.0.0.1" FilePath="C:/Users/malek saidani/Desktop/PFE/dataset_telecom.csv" Format="WINDOWS" Encoding="UTF-8" FieldSeparatorValue="&quot;,&quot;" RowSeparatorValue="&quot;\n&quot;" UseHeader="true" HeaderValue="1" FirstLineCaption="true" EscapeType="CSV" CsvOption="true" FieldSeparatorType="Comma"/>
+  <orgomg.cwm.resource.record:RecordFile xmi:id="_WLKvUf-VEe-4c_PsdhHpCA" name="default" dataManager="_WLKvUP-VEe-4c_PsdhHpCA">
+    <ownedElement xsi:type="TalendMetadata:MetadataTable" xmi:id="_WLKvUv-VEe-4c_PsdhHpCA" id="_LT1ZYP-VEe-4c_PsdhHpCA" label="metadata">
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLKvU_-VEe-4c_PsdhHpCA" label="id_client" length="8" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLKvVP-VEe-4c_PsdhHpCA" label="Tranche_d_age" length="5" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLKvVf-VEe-4c_PsdhHpCA" label="Ville" length="8" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWYP-VEe-4c_PsdhHpCA" label="Etat_civil" length="12" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWYf-VEe-4c_PsdhHpCA" label="nb_jours_abonne" length="3" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWYv-VEe-4c_PsdhHpCA" label="duree_appel_jour_minutes" length="5" precision="2" talendType="id_Float" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWY_-VEe-4c_PsdhHpCA" label="nb_appel_jour" length="3" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWZP-VEe-4c_PsdhHpCA" label="cout_appel_jour" length="5" precision="3" talendType="id_Float" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWZf-VEe-4c_PsdhHpCA" label="duree_appel_soiree_minutes" length="5" precision="2" talendType="id_Float" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWZv-VEe-4c_PsdhHpCA" label="nb_appel_soiree" length="3" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWZ_-VEe-4c_PsdhHpCA" label="cout_appel_soiree" length="5" precision="3" talendType="id_Float" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWaP-VEe-4c_PsdhHpCA" label="duree_appel_nuit_minutes" length="5" precision="2" talendType="id_Float" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWaf-VEe-4c_PsdhHpCA" label="nb_appel_nuit" length="3" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWav-VEe-4c_PsdhHpCA" label="cout_appel_nuit" length="-1" talendType="id_Float" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWa_-VEe-4c_PsdhHpCA" label="duree_appel_inter_minutes" length="4" precision="3" talendType="id_Float" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWbP-VEe-4c_PsdhHpCA" label="nb_appel_inter" length="2" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWbf-VEe-4c_PsdhHpCA" label="cout_appel_inter" length="-1" talendType="id_Float" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWbv-VEe-4c_PsdhHpCA" label="active_msg_vocaux" length="3" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWb_-VEe-4c_PsdhHpCA" label="nb_msg_vocaux" length="2" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWcP-VEe-4c_PsdhHpCA" label="nb_reclamation" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWcf-VEe-4c_PsdhHpCA" label="Score_Satisfaction" length="2" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWcv-VEe-4c_PsdhHpCA" label="churn" length="6" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_WLLWc_-VEe-4c_PsdhHpCA" label="date_activation" length="10" talendType="id_Date" pattern="&quot;dd-MM-yyyy&quot;"/>
+    </ownedElement>
+  </orgomg.cwm.resource.record:RecordFile>
+</xmi:XMI>
